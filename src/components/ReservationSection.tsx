@@ -34,9 +34,10 @@ export const ReservationSection: React.FC = () => {
     if (isDateMonday(formData.date)) {
       setErrors((prev) => ({
         ...prev,
-        date: 'SERA pazartesi günleri kapalıdır. Lütfen salı – pazar günleri arasında bir tarih seçiniz.',
+        date: 'SERA konseptinde pazartesi günleri servis bulunmamaktadır. Lütfen başka bir tarih seçin.',
       }));
       setAvailableSlots([]);
+      setFormData((prev) => ({ ...prev, time: '' }));
     } else {
       setErrors((prev) => {
         const next = { ...prev };
@@ -49,6 +50,8 @@ export const ReservationSection: React.FC = () => {
 
       if (slots.length > 0 && !slots.includes(formData.time)) {
         setFormData((prev) => ({ ...prev, time: slots[0] }));
+      } else if (slots.length === 0) {
+        setFormData((prev) => ({ ...prev, time: '' }));
       }
     }
   }, [formData.date]);
@@ -90,7 +93,7 @@ export const ReservationSection: React.FC = () => {
     if (!formData.date) {
       newErrors.date = 'Lütfen bir tarih seçin.';
     } else if (isDateMonday(formData.date)) {
-      newErrors.date = 'SERA pazartesi günleri kapalıdır. Lütfen salı – pazar günleri arasında bir tarih seçiniz.';
+      newErrors.date = 'SERA konseptinde pazartesi günleri servis bulunmamaktadır. Lütfen başka bir tarih seçin.';
     }
 
     if (!formData.time || availableSlots.length === 0) {
