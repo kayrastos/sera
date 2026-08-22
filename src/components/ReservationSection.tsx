@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, Clock, Users, Phone, User, Mail, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
-import { RESTAURANT_CONFIG, GUEST_OPTIONS, SEATING_AREAS } from '../data/restaurantData';
+import { RESTAURANT_CONFIG, TIME_SLOTS, GUEST_OPTIONS, SEATING_AREAS } from '../data/restaurantData';
 import { ReservationFormData } from '../types';
 import { getLocalTodayDateString, isDateMonday, getAvailableTimeSlots } from '../utils/dateUtils';
 
 export const ReservationSection: React.FC = () => {
   const initialToday = getLocalTodayDateString();
-  const initialSlots = getAvailableTimeSlots(initialToday);
+  const initialSlots = getAvailableTimeSlots(initialToday, TIME_SLOTS);
 
   const [formData, setFormData] = useState<ReservationFormData>({
     fullName: '',
@@ -23,6 +23,9 @@ export const ReservationSection: React.FC = () => {
   const [availableSlots, setAvailableSlots] = useState<string[]>(initialSlots);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  const submitBtnRef = useRef<HTMLButtonElement>(null);
+  const whatsappBtnRef = useRef<HTMLButtonElement>(null);
 
   // When date changes, update available time slots and validate Monday
   useEffect(() => {
@@ -41,7 +44,7 @@ export const ReservationSection: React.FC = () => {
         return next;
       });
 
-      const slots = getAvailableTimeSlots(formData.date);
+      const slots = getAvailableTimeSlots(formData.date, TIME_SLOTS);
       setAvailableSlots(slots);
 
       if (slots.length > 0 && !slots.includes(formData.time)) {
@@ -49,6 +52,31 @@ export const ReservationSection: React.FC = () => {
       }
     }
   }, [formData.date]);
+
+  // Modal accessibility: Escape key listener, auto-focus WhatsApp button on open, return focus to submit button on close
+  useEffect(() => {
+    if (showPreviewModal) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setShowPreviewModal(false);
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      const timer = setTimeout(() => {
+        whatsappBtnRef.current?.focus();
+      }, 50);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        clearTimeout(timer);
+        // Return focus to submit button when modal closes
+        setTimeout(() => {
+          submitBtnRef.current?.focus();
+        }, 50);
+      };
+    }
+  }, [showPreviewModal]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -349,6 +377,7 @@ Bu bir demo rezervasyon talebidir.`;
             {/* Submit Button */}
             <div className="pt-4">
               <button
+                ref={submitBtnRef}
                 type="submit"
                 id="reservation-submit-btn"
                 className="w-full py-4 bg-[#4A211E] hover:bg-[#351715] text-[#F0E8D9] border border-[#73705A]/40 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 shadow-xl hover:border-[#A88558] flex items-center justify-center gap-3 cursor-pointer"
@@ -375,11 +404,18 @@ Bu bir demo rezervasyon talebidir.`;
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#171411]/90 backdrop-blur-md p-4"
             role="dialog"
             aria-modal="true"
+            aria-labelledby="reservation-preview-title"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowPreviewModal(false);
+              }
+            }}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
               className="bg-[#1F1B17] border border-[#73705A]/40 max-w-lg w-full p-6 sm:p-8 shadow-2xl relative text-[#F0E8D9]"
             >
               <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#321816]">
@@ -387,7 +423,9 @@ Bu bir demo rezervasyon talebidir.`;
                   <CheckCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl text-[#F0E8D9]">Rezervasyon Talebi Özeti</h3>
+                  <h3 id="reservation-preview-title" className="font-serif text-xl text-[#F0E8D9]">
+                    Rezervasyon Talebi Özeti
+                  </h3>
                   <span className="text-[11px] font-mono text-[#A88558] uppercase tracking-wider">
                     SERA · Akşam Servisi
                   </span>
@@ -431,6 +469,7 @@ Bu bir demo rezervasyon talebidir.`;
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
+                  ref={whatsappBtnRef}
                   type="button"
                   onClick={handleSendToWhatsApp}
                   id="confirm-whatsapp-send-btn"

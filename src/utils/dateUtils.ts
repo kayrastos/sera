@@ -50,24 +50,14 @@ export function isSlotPast(dateStr: string, timeStr: string): boolean {
   return slotDate.getTime() <= now.getTime();
 }
 
-export const DEFAULT_TIME_SLOTS = [
-  '18:30',
-  '19:00',
-  '19:30',
-  '20:00',
-  '20:30',
-  '21:00',
-  '21:30',
-  '22:00',
-  '22:30',
-];
+import { TIME_SLOTS } from '../data/restaurantData';
 
 /**
  * Filters time slots for a given date, removing past slots if the date is today.
  */
 export function getAvailableTimeSlots(
   dateStr: string,
-  allSlots: string[] = DEFAULT_TIME_SLOTS
+  allSlots: string[] = TIME_SLOTS
 ): string[] {
   const todayStr = getLocalTodayDateString();
   if (dateStr !== todayStr) {
