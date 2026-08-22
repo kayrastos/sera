@@ -1,4 +1,5 @@
 import React from 'react';
+import { ImageWithFallback } from './ImageWithFallback';
 
 export const SpaceSection: React.FC = () => {
   return (
@@ -22,15 +23,14 @@ export const SpaceSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Main Wide Atmosphere Image */}
           <div className="md:col-span-8 relative aspect-[16/10] overflow-hidden border border-[#321816] shadow-2xl bg-[#201C18]">
-            <img
+            <ImageWithFallback
               src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=85"
               alt="Loş ışıklandırılmış restoran masaları ve mum ışığı atmosferi"
               className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.12]"
               loading="lazy"
-              referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between pointer-events-none">
               <div>
                 <span className="text-xs uppercase tracking-[0.25em] text-[#F0E8D9] font-serif block">ANA SALON</span>
                 <span className="text-[11px] text-[#9E9588] font-sans">Keten örtüler, el yapımı seramikler</span>
@@ -44,15 +44,14 @@ export const SpaceSection: React.FC = () => {
           {/* Secondary Detail Image (Open kitchen bar & wine detail) */}
           <div className="md:col-span-4 space-y-6">
             <div className="relative aspect-[4/3] overflow-hidden border border-[#321816] shadow-2xl bg-[#201C18]">
-              <img
+              <ImageWithFallback
                 src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=85"
                 alt="Açık mutfak barı ve şeflerin çalışma alanı"
                 className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.1]"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/80 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/80 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-4 left-4 pointer-events-none">
                 <span className="text-xs uppercase tracking-[0.2em] text-[#F0E8D9] font-serif block">MUTFAK BARI</span>
                 <span className="text-[10px] text-[#9E9588]">Ateşi ve servisi izleme alanı</span>
               </div>

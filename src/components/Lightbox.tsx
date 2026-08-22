@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GalleryItem } from '../types';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface LightboxProps {
   item: GalleryItem | null;
@@ -18,6 +19,8 @@ export const Lightbox: React.FC<LightboxProps> = ({
   onSelectNext,
   onSelectPrev,
 }) => {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -31,6 +34,10 @@ export const Lightbox: React.FC<LightboxProps> = ({
     if (item) {
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
+      // Auto focus the close button for accessibility
+      setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 50);
     }
     return () => {
       document.body.style.overflow = '';
@@ -45,37 +52,49 @@ export const Lightbox: React.FC<LightboxProps> = ({
   return (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-[#171411]/95 backdrop-blur-md p-4 md:p-10"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-[#171411]/95 backdrop-blur-md p-4 md:p-10 select-none"
         role="dialog"
         aria-modal="true"
         aria-label="Görsel Büyütme Galerisi"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
       >
         {/* Close Button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           id="lightbox-close-btn"
-          aria-label="Galeriyi kapat"
-          className="absolute top-6 right-6 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none"
+          aria-label="Galeriyi kapat (Escape)"
+          className="absolute top-6 right-6 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A88558]"
         >
           <X className="w-6 h-6" />
         </button>
 
         {/* Previous Button */}
         <button
-          onClick={onSelectPrev}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectPrev();
+          }}
           id="lightbox-prev-btn"
-          aria-label="Önceki görsel"
-          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none"
+          aria-label="Önceki görsel (Sol Ok)"
+          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A88558]"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
 
         {/* Next Button */}
         <button
-          onClick={onSelectNext}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectNext();
+          }}
           id="lightbox-next-btn"
-          aria-label="Sonraki görsel"
-          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none"
+          aria-label="Sonraki görsel (Sağ Ok)"
+          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-3 text-[#F0E8D9] hover:text-[#A88558] bg-[#201C18]/80 border border-[#321816] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A88558]"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
@@ -86,14 +105,15 @@ export const Lightbox: React.FC<LightboxProps> = ({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
           transition={{ duration: 0.25 }}
+          onClick={(e) => e.stopPropagation()}
           className="relative max-w-5xl max-h-[85vh] flex flex-col items-center"
         >
           <div className="relative overflow-hidden border border-[#321816] bg-[#171411] shadow-2xl">
-            <img
+            <ImageWithFallback
               src={item.image}
               alt={item.title}
+              fallbackTitle={item.title}
               className="max-h-[70vh] w-auto object-contain"
-              referrerPolicy="no-referrer"
             />
           </div>
 

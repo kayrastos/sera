@@ -4,6 +4,7 @@ import { Maximize2 } from 'lucide-react';
 import { GALLERY_ITEMS } from '../data/restaurantData';
 import { GalleryCategory, GalleryItem } from '../types';
 import { Lightbox } from './Lightbox';
+import { ImageWithFallback } from './ImageWithFallback';
 
 const CATEGORIES: GalleryCategory[] = ['Tümü', 'Mutfak', 'Tabaklar', 'Mekân', 'Detaylar'];
 
@@ -78,27 +79,34 @@ export const Gallery: React.FC = () => {
             {filteredItems.map((item, index) => {
               const isWide = index % 5 === 0;
               return (
-                <div
+                <button
+                  type="button"
                   key={item.id}
                   onClick={() => setSelectedItem(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedItem(item);
+                    }
+                  }}
                   id={`gallery-item-${item.id}`}
-                  className={`group relative overflow-hidden bg-[#201C18] border border-[#321816] cursor-pointer ${
+                  aria-label={`Fotoğrafı büyüt: ${item.title}`}
+                  className={`group relative overflow-hidden bg-[#201C18] border border-[#321816] cursor-pointer text-left w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A88558] ${
                     isWide ? 'sm:col-span-2 aspect-[16/10]' : 'aspect-square'
                   }`}
                 >
-                  <img
+                  <ImageWithFallback
                     src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover filter brightness-[0.78] contrast-[1.08] group-hover:scale-105 group-hover:brightness-[0.9] transition-all duration-700"
                     loading="lazy"
-                    referrerPolicy="no-referrer"
                   />
 
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-[#171411]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-[#171411]/20 to-transparent opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 pointer-events-none" />
 
                   {/* Hover Caption */}
-                  <div className="absolute inset-0 p-5 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  <div className="absolute inset-0 p-5 flex flex-col justify-between opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
                     <div className="flex justify-end">
                       <span className="p-2 bg-[#171411]/80 backdrop-blur-sm text-[#F0E8D9] border border-[#321816]">
                         <Maximize2 className="w-3.5 h-3.5" />
@@ -113,7 +121,7 @@ export const Gallery: React.FC = () => {
                       <p className="text-xs text-[#DDD0BB]/80 font-light mt-0.5">{item.caption}</p>
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </motion.div>

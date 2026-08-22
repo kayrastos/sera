@@ -1,5 +1,6 @@
 import React from 'react';
 import { SIGNATURE_DISHES } from '../data/restaurantData';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface SignatureDishesProps {
   onSelectDishCategory?: (category: string) => void;
@@ -29,14 +30,13 @@ export const SignatureDishes: React.FC<SignatureDishesProps> = ({ onSelectDishCa
           {/* Item 1: Large Featured Plate (Span 7) */}
           <div className="md:col-span-7 group flex flex-col justify-between">
             <div className="relative aspect-[16/10] overflow-hidden bg-[#201C18] border border-[#321816] mb-6">
-              <img
+              <ImageWithFallback
                 src={SIGNATURE_DISHES[0].image}
                 alt={SIGNATURE_DISHES[0].name}
                 className="w-full h-full object-cover filter brightness-[0.78] contrast-[1.08] group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-4 left-4">
                 <span className="px-3 py-1 bg-[#171411]/80 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-[#DDD0BB] font-mono border border-[#321816]">
                   {SIGNATURE_DISHES[0].category}
@@ -75,14 +75,13 @@ export const SignatureDishes: React.FC<SignatureDishesProps> = ({ onSelectDishCa
           {/* Item 2: Medium Vertical Plate (Span 5) */}
           <div className="md:col-span-5 group flex flex-col justify-between">
             <div className="relative aspect-[4/3] overflow-hidden bg-[#201C18] border border-[#321816] mb-6">
-              <img
+              <ImageWithFallback
                 src={SIGNATURE_DISHES[1].image}
                 alt={SIGNATURE_DISHES[1].name}
                 className="w-full h-full object-cover filter brightness-[0.78] contrast-[1.08] group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-4 left-4">
                 <span className="px-3 py-1 bg-[#171411]/80 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-[#DDD0BB] font-mono border border-[#321816]">
                   {SIGNATURE_DISHES[1].category}
@@ -121,14 +120,13 @@ export const SignatureDishes: React.FC<SignatureDishesProps> = ({ onSelectDishCa
           {/* Item 3: Square Lower Left (Span 5) */}
           <div className="md:col-span-5 group flex flex-col justify-between mt-4 md:mt-8">
             <div className="relative aspect-[4/3] overflow-hidden bg-[#201C18] border border-[#321816] mb-6">
-              <img
+              <ImageWithFallback
                 src={SIGNATURE_DISHES[2].image}
                 alt={SIGNATURE_DISHES[2].name}
                 className="w-full h-full object-cover filter brightness-[0.78] contrast-[1.08] group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-4 left-4">
                 <span className="px-3 py-1 bg-[#171411]/80 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-[#DDD0BB] font-mono border border-[#321816]">
                   {SIGNATURE_DISHES[2].category}
@@ -167,14 +165,13 @@ export const SignatureDishes: React.FC<SignatureDishesProps> = ({ onSelectDishCa
           {/* Item 4: Wide Lower Right (Span 7) */}
           <div className="md:col-span-7 group flex flex-col justify-between mt-4 md:mt-8">
             <div className="relative aspect-[16/10] overflow-hidden bg-[#201C18] border border-[#321816] mb-6">
-              <img
+              <ImageWithFallback
                 src={SIGNATURE_DISHES[3].image}
                 alt={SIGNATURE_DISHES[3].name}
                 className="w-full h-full object-cover filter brightness-[0.78] contrast-[1.08] group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
-                referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-4 left-4">
                 <span className="px-3 py-1 bg-[#171411]/80 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-[#DDD0BB] font-mono border border-[#321816]">
                   {SIGNATURE_DISHES[3].category}

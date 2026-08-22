@@ -1,25 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Clock, Users, Phone, User, Mail, MessageSquare, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
-import { RESTAURANT_CONFIG, TIME_SLOTS, GUEST_OPTIONS, SEATING_AREAS } from '../data/restaurantData';
+import { Calendar, Clock, Users, Phone, User, Mail, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react';
+import { RESTAURANT_CONFIG, GUEST_OPTIONS, SEATING_AREAS } from '../data/restaurantData';
 import { ReservationFormData } from '../types';
+import { getLocalTodayDateString, isDateMonday, getAvailableTimeSlots } from '../utils/dateUtils';
 
 export const ReservationSection: React.FC = () => {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const initialToday = getLocalTodayDateString();
+  const initialSlots = getAvailableTimeSlots(initialToday);
 
   const [formData, setFormData] = useState<ReservationFormData>({
     fullName: '',
     phone: '',
     email: '',
-    date: todayStr,
-    time: '19:30',
+    date: initialToday,
+    time: initialSlots[0] || '19:30',
     guests: '2 Kişi',
     seatingArea: 'Salon',
     specialRequest: '',
   });
 
+  const [availableSlots, setAvailableSlots] = useState<string[]>(initialSlots);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  // When date changes, update available time slots and validate Monday
+  useEffect(() => {
+    if (!formData.date) return;
+
+    if (isDateMonday(formData.date)) {
+      setErrors((prev) => ({
+        ...prev,
+        date: 'SERA pazartesi günleri kapalıdır. Lütfen salı – pazar günleri arasında bir tarih seçiniz.',
+      }));
+      setAvailableSlots([]);
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.date;
+        return next;
+      });
+
+      const slots = getAvailableTimeSlots(formData.date);
+      setAvailableSlots(slots);
+
+      if (slots.length > 0 && !slots.includes(formData.time)) {
+        setFormData((prev) => ({ ...prev, time: slots[0] }));
+      }
+    }
+  }, [formData.date]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -29,8 +58,19 @@ export const ReservationSection: React.FC = () => {
     } else if (formData.phone.replace(/\D/g, '').length < 10) {
       newErrors.phone = 'Geçerli bir telefon numarası giriniz (örn: 0532 123 45 67).';
     }
-    if (!formData.date) newErrors.date = 'Lütfen bir tarih seçin.';
-    if (!formData.time) newErrors.time = 'Lütfen saat seçin.';
+    
+    if (!formData.date) {
+      newErrors.date = 'Lütfen bir tarih seçin.';
+    } else if (isDateMonday(formData.date)) {
+      newErrors.date = 'SERA pazartesi günleri kapalıdır. Lütfen salı – pazar günleri arasında bir tarih seçiniz.';
+    }
+
+    if (!formData.time || availableSlots.length === 0) {
+      newErrors.time = availableSlots.length === 0 
+        ? 'Seçilen tarihte uygun servis saati bulunmamaktadır.' 
+        : 'Lütfen saat seçin.';
+    }
+
     if (!formData.guests) newErrors.guests = 'Lütfen kişi sayısı seçin.';
 
     setErrors(newErrors);
@@ -157,12 +197,20 @@ Bu bir demo rezervasyon talebidir.`;
                   <input
                     type="date"
                     id="res-date"
-                    min={todayStr}
+                    min={initialToday}
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full bg-[#171411] border border-[#321816] text-[#F0E8D9] text-sm px-4 py-3.5 focus:outline-none focus:border-[#A88558] transition-colors"
+                    className={`w-full bg-[#171411] border text-[#F0E8D9] text-sm px-4 py-3.5 focus:outline-none transition-colors ${
+                      errors.date ? 'border-red-600/80 focus:border-red-500' : 'border-[#321816] focus:border-[#A88558]'
+                    }`}
                   />
                 </div>
+                {errors.date && (
+                  <p className="text-[11px] text-red-400 font-mono mt-1 flex items-start gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                    <span>{errors.date}</span>
+                  </p>
+                )}
               </div>
 
               {/* Saat */}
@@ -177,17 +225,31 @@ Bu bir demo rezervasyon talebidir.`;
                   <select
                     id="res-time"
                     value={formData.time}
+                    disabled={availableSlots.length === 0}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="w-full bg-[#171411] border border-[#321816] text-[#F0E8D9] text-sm px-4 py-3.5 focus:outline-none focus:border-[#A88558] transition-colors appearance-none cursor-pointer"
+                    className={`w-full bg-[#171411] border text-[#F0E8D9] text-sm px-4 py-3.5 focus:outline-none transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                      errors.time ? 'border-red-600/80 focus:border-red-500' : 'border-[#321816] focus:border-[#A88558]'
+                    }`}
                   >
-                    {TIME_SLOTS.map((t) => (
-                      <option key={t} value={t} className="bg-[#171411] text-[#F0E8D9]">
-                        {t}
+                    {availableSlots.length === 0 ? (
+                      <option value="" className="bg-[#171411] text-[#73705A]">
+                        Müsait Saat Yok
                       </option>
-                    ))}
+                    ) : (
+                      availableSlots.map((t) => (
+                        <option key={t} value={t} className="bg-[#171411] text-[#F0E8D9]">
+                          {t}
+                        </option>
+                      ))
+                    )}
                   </select>
                   <Clock className="w-4 h-4 text-[#73705A] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
+                {errors.time && (
+                  <p className="text-[11px] text-red-400 font-mono mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {errors.time}
+                  </p>
+                )}
               </div>
 
               {/* Kişi Sayısı */}
@@ -289,7 +351,7 @@ Bu bir demo rezervasyon talebidir.`;
               <button
                 type="submit"
                 id="reservation-submit-btn"
-                className="w-full py-4 bg-[#4A211E] hover:bg-[#351715] text-[#F0E8D9] border border-[#73705A]/40 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 shadow-xl hover:border-[#A88558] flex items-center justify-center gap-3"
+                className="w-full py-4 bg-[#4A211E] hover:bg-[#351715] text-[#F0E8D9] border border-[#73705A]/40 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 shadow-xl hover:border-[#A88558] flex items-center justify-center gap-3 cursor-pointer"
               >
                 <span>REZERVASYON TALEBİ OLUŞTUR</span>
                 <MessageSquare className="w-4 h-4 text-[#A88558]" />
@@ -349,6 +411,12 @@ Bu bir demo rezervasyon talebidir.`;
                   <span className="text-[#73705A]">Telefon:</span>
                   <span className="font-medium text-[#F0E8D9]">{formData.phone}</span>
                 </div>
+                {formData.email && (
+                  <div className="flex justify-between border-b border-[#321816]/60 pb-1.5">
+                    <span className="text-[#73705A]">E-posta:</span>
+                    <span className="font-medium text-[#F0E8D9]">{formData.email}</span>
+                  </div>
+                )}
                 {formData.specialRequest && (
                   <div className="flex justify-between pt-1">
                     <span className="text-[#73705A]">Not:</span>
@@ -366,7 +434,7 @@ Bu bir demo rezervasyon talebidir.`;
                   type="button"
                   onClick={handleSendToWhatsApp}
                   id="confirm-whatsapp-send-btn"
-                  className="flex-1 py-3.5 bg-[#4A211E] hover:bg-[#351715] text-[#F0E8D9] border border-[#A88558] text-xs font-semibold uppercase tracking-[0.18em] transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-[#4A211E] hover:bg-[#351715] text-[#F0E8D9] border border-[#A88558] text-xs font-semibold uppercase tracking-[0.18em] transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <MessageSquare className="w-4 h-4 text-[#A88558]" />
                   <span>WhatsApp ile Gönder</span>
@@ -375,7 +443,7 @@ Bu bir demo rezervasyon talebidir.`;
                 <button
                   type="button"
                   onClick={() => setShowPreviewModal(false)}
-                  className="px-6 py-3.5 bg-[#171411] hover:bg-[#201C18] text-[#9E9588] hover:text-[#F0E8D9] border border-[#321816] text-xs uppercase tracking-[0.15em] transition-colors"
+                  className="px-6 py-3.5 bg-[#171411] hover:bg-[#201C18] text-[#9E9588] hover:text-[#F0E8D9] border border-[#321816] text-xs uppercase tracking-[0.15em] transition-colors cursor-pointer"
                 >
                   Düzenle
                 </button>

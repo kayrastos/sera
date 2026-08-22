@@ -71,7 +71,7 @@ export const LocationContact: React.FC = () => {
             {/* Note */}
             <div className="pt-8 mt-8 border-t border-[#321816]/60 flex items-center justify-between text-xs text-[#73705A] font-mono">
               <span>REZERVASYONLU SERVİS</span>
-              <span>VALE HİZMETİ (DEMO)</span>
+              <span>VALE AKIŞI · KONSEPT</span>
             </div>
           </div>
 
@@ -79,8 +79,9 @@ export const LocationContact: React.FC = () => {
           <div className="lg:col-span-5 flex flex-col justify-between gap-4">
             {/* WhatsApp Tile */}
             <button
+              type="button"
               onClick={openWhatsApp}
-              className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between"
+              className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between cursor-pointer"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558] group-hover:bg-[#4A211E] transition-colors">
@@ -102,7 +103,7 @@ export const LocationContact: React.FC = () => {
             {/* Phone Tile */}
             <a
               href={`tel:${RESTAURANT_CONFIG.phoneTel}`}
-              className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between"
+              className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between cursor-pointer"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558] group-hover:bg-[#4A211E] transition-colors">
@@ -122,46 +123,94 @@ export const LocationContact: React.FC = () => {
             </a>
 
             {/* Instagram Tile */}
-            <div className="p-6 bg-[#1F1B17] border border-[#321816] flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558]">
-                  <Instagram className="w-5 h-5" />
+            {RESTAURANT_CONFIG.instagramUrl ? (
+              <a
+                href={RESTAURANT_CONFIG.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558] group-hover:bg-[#4A211E] transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
+                      SOSYAL MEDYA
+                    </span>
+                    <span className="font-serif text-lg text-[#F0E8D9] group-hover:text-[#A88558] transition-colors">
+                      {RESTAURANT_CONFIG.instagram}
+                    </span>
+                    <p className="text-xs text-[#9E9588] font-mono">Mutfaktan günlük kareler</p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
-                    SOSYAL MEDYA
-                  </span>
-                  <span className="font-serif text-lg text-[#F0E8D9]">
-                    {RESTAURANT_CONFIG.instagram}
-                  </span>
-                  <p className="text-xs text-[#9E9588] font-mono">Mutfaktan günlük kareler</p>
+                <ArrowUpRight className="w-4 h-4 text-[#73705A] group-hover:text-[#F0E8D9] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </a>
+            ) : (
+              <div className="p-6 bg-[#1F1B17] border border-[#321816] flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558]">
+                    <Instagram className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
+                      SOSYAL MEDYA
+                    </span>
+                    <span className="font-serif text-lg text-[#F0E8D9]">
+                      {RESTAURANT_CONFIG.instagram}
+                    </span>
+                    <p className="text-xs text-[#9E9588] font-mono">Mutfaktan günlük kareler</p>
+                  </div>
                 </div>
+                <span className="text-[10px] uppercase font-mono text-[#73705A] border border-[#321816] px-2 py-1">
+                  DEMO
+                </span>
               </div>
-              <span className="text-[10px] uppercase font-mono text-[#73705A] border border-[#321816] px-2 py-1">
-                DEMO
-              </span>
-            </div>
+            )}
 
             {/* Email Tile */}
-            <div className="p-6 bg-[#1F1B17] border border-[#321816] flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558]">
-                  <Mail className="w-5 h-5" />
+            {RESTAURANT_CONFIG.emailEnabled ? (
+              <a
+                href={`mailto:${RESTAURANT_CONFIG.email}`}
+                className="p-6 bg-[#1F1B17] hover:bg-[#201C18] border border-[#321816] hover:border-[#A88558]/60 transition-all text-left group flex items-center justify-between cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558] group-hover:bg-[#4A211E] transition-colors">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
+                      E-POSTA
+                    </span>
+                    <span className="font-serif text-sm sm:text-base text-[#F0E8D9] group-hover:text-[#A88558] transition-colors">
+                      {RESTAURANT_CONFIG.email}
+                    </span>
+                    <p className="text-xs text-[#9E9588] font-mono">Basın & genel yazışmalar</p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
-                    E-POSTA
-                  </span>
-                  <span className="font-serif text-sm sm:text-base text-[#F0E8D9]">
-                    {RESTAURANT_CONFIG.email}
-                  </span>
-                  <p className="text-xs text-[#9E9588] font-mono">Basın & genel yazışmalar</p>
+                <ArrowUpRight className="w-4 h-4 text-[#73705A] group-hover:text-[#F0E8D9] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </a>
+            ) : (
+              <div className="p-6 bg-[#1F1B17] border border-[#321816] flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-[#171411] border border-[#321816] text-[#A88558]">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-widest text-[#73705A] block">
+                      E-POSTA
+                    </span>
+                    <span className="font-serif text-sm sm:text-base text-[#F0E8D9]">
+                      {RESTAURANT_CONFIG.email}
+                    </span>
+                    <p className="text-xs text-[#9E9588] font-mono">Basın & genel yazışmalar</p>
+                  </div>
                 </div>
+                <span className="text-[10px] uppercase font-mono text-[#73705A] border border-[#321816] px-2 py-1">
+                  DEMO
+                </span>
               </div>
-              <span className="text-[10px] uppercase font-mono text-[#73705A] border border-[#321816] px-2 py-1">
-                DEMO
-              </span>
-            </div>
+            )}
           </div>
         </div>
       </div>

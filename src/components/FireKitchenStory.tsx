@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flame, Sparkles } from 'lucide-react';
+import { ImageWithFallback } from './ImageWithFallback';
 
 export const FireKitchenStory: React.FC = () => {
   return (
@@ -11,16 +12,15 @@ export const FireKitchenStory: React.FC = () => {
             <div className="relative">
               {/* Primary Large Image */}
               <div className="aspect-[4/5] overflow-hidden border border-[#321816] shadow-2xl bg-[#201C18]">
-                <img
-                  src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=85"
+                <ImageWithFallback
+                  src="https://images.unsplash.com/photo-1507048821117-6573c21c4388?auto=format&fit=crop&w=1000&q=85"
                   alt="Açık alev ve odun ateşi üzerinde döküm ızgara tekniği"
                   className="w-full h-full object-cover filter brightness-[0.72] contrast-[1.12]"
                   loading="lazy"
-                  referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-[#171411]/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#171411]/90 via-[#171411]/20 to-transparent pointer-events-none" />
                 
-                <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between text-xs font-mono text-[#DDD0BB]/80">
+                <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between text-xs font-mono text-[#DDD0BB]/80 pointer-events-none">
                   <span>MEŞE & ZEYTİN KÖMÜRÜ</span>
                   <span>450°C KOR ATEŞİ</span>
                 </div>
@@ -28,12 +28,11 @@ export const FireKitchenStory: React.FC = () => {
 
               {/* Offset Secondary Image (Chef hands / Preparation detail) */}
               <div className="hidden sm:block absolute -top-8 -right-8 w-48 aspect-[3/4] border border-[#4A211E] overflow-hidden shadow-2xl bg-[#171411]">
-                <img
+                <ImageWithFallback
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=600&q=85"
                   alt="Şefin tabak hazırlığı ve özenli dokunuşu"
                   className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.1]"
                   loading="lazy"
-                  referrerPolicy="no-referrer"
                 />
               </div>
             </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, Flame, ArrowRight } from 'lucide-react';
 import { RESTAURANT_CONFIG } from '../data/restaurantData';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface HeroProps {
   onExploreMenu: () => void;
@@ -16,17 +17,16 @@ export const Hero: React.FC<HeroProps> = ({ onExploreMenu, onOpenReservation }) 
     >
       {/* Background Image with Dark Vignette & Cinematic Grading */}
       <div className="absolute inset-0 z-0">
-        <img
+        <ImageWithFallback
           src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=2000&q=88"
           alt="Açık odun ateşi ve şefin tabağı hazırlama anı"
           className="w-full h-full object-cover object-center scale-105 filter brightness-[0.42] contrast-[1.12] saturate-[0.9]"
           loading="eager"
-          referrerPolicy="no-referrer"
         />
 
         {/* Cinematic gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#171411] via-[#171411]/50 to-[#171411]/70" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#171411_95%)] opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#171411] via-[#171411]/50 to-[#171411]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#171411_95%)] opacity-80 pointer-events-none" />
         {/* Warm oxblood ambiance tone */}
         <div className="absolute inset-0 bg-[#4A211E]/20 mix-blend-color-burn pointer-events-none" />
       </div>
