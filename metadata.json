@@ -1,0 +1,6 @@
+{
+  "name": "SERA — Restaurant Concept",
+  "description": "VELNAR Digital Studio tarafından hazırlanmış çağdaş Akdeniz ve ateş mutfağı restoran konsepti.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
